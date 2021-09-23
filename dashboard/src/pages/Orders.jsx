@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { v4 as uuid } from "uuid";
 import {
@@ -14,6 +14,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Table,
+  TableRow,
+  TableCell,
+  TableHead,
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
@@ -22,12 +26,18 @@ import OrderDetails from "src/components/orders//OrderDetails";
 import SearchIcon from "@material-ui/icons/Search";
 import PropTypes from "prop-types";
 import FilterListIcon from '@material-ui/icons/FilterList';
-const Orders = () => {
+import axios from "axios";
+import { fetchUsers } from "src/redux/index";
+
+
+const Orders = ({usersList,fetchUsersProcess}) => {
   const [value, setValue] = useState(0);
+  const [users,setUsers] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -230,8 +240,14 @@ const Orders = () => {
     setOpen(false);
   };
 
+
+
   return (
     <>
+    <Button style={{margin:"20px"}} variant="contained" onClick={()=>fetchUsersProcess()}>LOAD DATA</Button>
+
+   
+  
       <Dialog
         open={open}
         fullWidth
@@ -303,37 +319,41 @@ const Orders = () => {
           </Button>
 
 
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <AppBar
-                position="static"
-                style={{ background: "transparent", boxShadow: "none" }}
-              >
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="simple tabs example"
-                >
-                  <Tab label="Contacts" {...a11yProps(0)} />
-                  <Tab label="Company" {...a11yProps(1)} />
-                  <Tab label="Lists" {...a11yProps(2)} />
-                </Tabs>
-              </AppBar>
-              <TabPanel value={value} index={0}>
-                <OrderDetails orders={orders} />
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <OrderDetails orders={orders.slice(0, 2)} />
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                <OrderDetails orders={orders.slice(3, 4)} />
-              </TabPanel>
-            </Grid>
-          </Grid>
+
+          <Table>
+              <TableCell><h3>Full Name</h3> </TableCell>
+              <TableCell><h3>ID</h3> </TableCell>
+              <TableCell><h3>LinkedIn Username</h3> </TableCell>
+              <TableCell style={{}}><h3>Country</h3></TableCell>
+              {usersList.users.length>0?(<>
+                {usersList.users?.map((user)=><TableRow> 
+                    <TableCell>{user.full_name}</TableCell>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.linkedin_username}</TableCell>
+                    <TableCell>{user.location_country}</TableCell>
+                </TableRow>)}
+              </>):(null)}
+
+          </Table>
+
+
         </Container>
       </Box>
     </>
   );
 };
 
-export default Orders;
+
+const mapStateToProps=(state)=>{
+  return {
+    usersList: state.usersList
+  }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+  return {
+    fetchUsersProcess: ()=>dispatch(fetchUsers())
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Orders);
