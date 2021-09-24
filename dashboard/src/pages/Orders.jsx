@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { v4 as uuid } from "uuid";
@@ -18,21 +18,28 @@ import {
   TableRow,
   TableCell,
   TableHead,
+  LinearProgress,
+  Snackbar
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import { CircularProgress } from "@material-ui/core";
 import OrderDetails from "src/components/orders//OrderDetails";
 import SearchIcon from "@material-ui/icons/Search";
+import CloseIcon from "@material-ui/icons/Close"
 import PropTypes from "prop-types";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import axios from "axios";
 import { fetchUsers } from "src/redux/index";
+import { saveUsers } from "src/redux/saveUsers/saveUsersActions";
 
 
-const Orders = ({usersList,fetchUsersProcess}) => {
+const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
   const [value, setValue] = useState(0);
-  const [users,setUsers] = useState([])
+  const [users,setUsers] = useState([]);
+
+  
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -231,6 +238,9 @@ const Orders = ({usersList,fetchUsersProcess}) => {
   ];
 
   const [open, setOpen] = React.useState(false);
+ 
+  const [openSnack,setOpenSnack] = useState(true)
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -240,14 +250,18 @@ const Orders = ({usersList,fetchUsersProcess}) => {
     setOpen(false);
   };
 
+  useEffect(()=>{
+  
+
+    fetchUsersProcess()
+
+  
+  },[])
+
 
 
   return (
     <>
-    <Button style={{margin:"20px"}} variant="contained" onClick={()=>fetchUsersProcess()}>LOAD DATA</Button>
-
-   
-  
       <Dialog
         open={open}
         fullWidth
@@ -320,22 +334,39 @@ const Orders = ({usersList,fetchUsersProcess}) => {
 
 
 
-          <Table>
+          <Table >
               <TableCell><h3>Full Name</h3> </TableCell>
               <TableCell><h3>ID</h3> </TableCell>
+              <TableCell><h3>Email</h3> </TableCell>
               <TableCell><h3>LinkedIn Username</h3> </TableCell>
               <TableCell style={{}}><h3>Country</h3></TableCell>
+              <TableCell></TableCell>
               {usersList.users.length>0?(<>
                 {usersList.users?.map((user)=><TableRow> 
                     <TableCell>{user.full_name}</TableCell>
                     <TableCell>{user.id}</TableCell>
+                    <TableCell>{user && user.emails && user.emails.length>0 ?(<>{user.emails[0].address}</>):(<>NULL</>)}</TableCell>
                     <TableCell>{user.linkedin_username}</TableCell>
                     <TableCell>{user.location_country}</TableCell>
+                    <TableCell><Button onClick={()=>{setOpenSnack(true);saveUserProcess({user_id: user.id, full_name: user.full_name, country: user.location_country,linkedin: user.linkedin_username, email: (user && user.emails && user.emails.length>0 ?user.emails[0].address:"N/A")})}} variant="contained">SAVE</Button></TableCell>
                 </TableRow>)}
-              </>):(null)}
+              </>):(<TableRow><TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell > <LinearProgress style={{width:"200px"}} /> </TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell> </TableRow>)}
 
           </Table>
-
+            <Snackbar anchorOrigin={{vertical:"bottom", horizontal:"left"}}
+            open={((userSaveRef.refNo ) || (userSaveRef.error))&&openSnack}
+            autoHideDuration={1000}
+            onClose={(event,reason)=>{ return reason=="clickaway"?(null):setOpenSnack(false)}}
+            message={userSaveRef.error || "SAVED"}
+            action={<React.Fragment>
+              <IconButton onClick={()=>setOpenSnack(false)}><CloseIcon color="white"/></IconButton>
+              </React.Fragment>}
+            />
 
         </Container>
       </Box>
@@ -344,15 +375,18 @@ const Orders = ({usersList,fetchUsersProcess}) => {
 };
 
 
+
 const mapStateToProps=(state)=>{
   return {
-    usersList: state.usersList
+    usersList: state.usersList,
+    userSaveRef: state.saveUserRef
   }
 }
 
 const mapDispatchToProps=(dispatch)=>{
   return {
-    fetchUsersProcess: ()=>dispatch(fetchUsers())
+    fetchUsersProcess: ()=>dispatch(fetchUsers()),
+    saveUserProcess:(user_id)=>dispatch(saveUsers(user_id))
   }
 }
 
