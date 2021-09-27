@@ -1,5 +1,6 @@
 import {SAVE_USERS_REQUEST, SAVE_USERS_SUCCESS, SAVE_USERS_FAILURE} from './saveUsersTypes'
 import axios from 'axios'
+import { API_SERVICE } from '../../URI';
 
 
 const saveUsersRequest=()=>{
@@ -28,7 +29,7 @@ export const saveUsers=(userdata)=>{
         dispatch(saveUsersRequest())
         axios.request({
             method: 'post',
-        url: 'http://localhost:5000/api/add-user',
+        url: `${API_SERVICE}/api/add-user`,
         data: {
                 id: userdata.user_id,
                 name: userdata.full_name,

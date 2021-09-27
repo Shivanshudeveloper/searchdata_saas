@@ -1,5 +1,6 @@
 import {FETCH_SAVED_USERS_REQUEST, FETCH_SAVED_USERS_SUCCESS, FETCH_SAVED_USERS_FAILURE} from './fetchSavedUsersTypes'
 import axios from 'axios'
+import { API_SERVICE } from '../../URI';
 
 
 const fetchSavedUsersRequest=()=>{
@@ -26,7 +27,7 @@ export const fetchSavedUsers=()=>{
     
     return (dispatch)=>{
         dispatch(fetchSavedUsersRequest())
-        axios.get("http://localhost:5000/api/fetch_saved_users").then((resp)=>{
+        axios.get(`${API_SERVICE}/api/fetch_saved_users`).then((resp)=>{
     if(resp.data.error)
         {
             console.log(resp.data.error)

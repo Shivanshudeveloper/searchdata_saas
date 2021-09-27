@@ -1,6 +1,6 @@
 import {ADD_EMAIL_CONTACTS_REQUEST, ADD_EMAIL_CONTACTS_SUCCESS, ADD_EMAIL_CONTACTS_FAILURE} from './addEmailContactsTypes'
 import axios from 'axios'
-
+import { API_SERVICE } from '../../URI';
 
 const addEmailContactsRequest=()=>{
     return{
@@ -27,7 +27,7 @@ export const addEmailContacts=(user_id,email_adding)=>{
     return (dispatch)=>{
         dispatch(addEmailContactsRequest())
         axios.request({
-            url:"http://localhost:5000/api/add-user-contact-email",
+            url:`${API_SERVICE}/api/add-user-contact-email`,
        method:"POST",
        data: {user_id: user_id, email_adding: email_adding} 
     }).then((resp)=>{

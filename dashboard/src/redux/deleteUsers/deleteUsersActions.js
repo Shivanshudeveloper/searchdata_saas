@@ -1,5 +1,6 @@
 import {DELETE_USERS_REQUEST, DELETE_USERS_SUCCESS, DELETE_USERS_FAILURE} from './deleteUsersTypes'
 import axios from 'axios'
+import { API_SERVICE } from '../../URI';
 
 
 const deleteUsersRequest=()=>{
@@ -28,7 +29,7 @@ export const deleteUsers=(userdata)=>{
         dispatch(deleteUsersRequest())
         axios.request({
             method: 'post',
-        url: 'http://localhost:5000/api/delete-user',
+        url: `${API_SERVICE}/api/delete-user`,
         data: {
                 id: userdata.user_id,
             }

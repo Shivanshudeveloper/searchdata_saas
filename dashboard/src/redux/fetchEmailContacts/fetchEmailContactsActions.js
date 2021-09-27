@@ -1,5 +1,6 @@
 import {FETCH_EMAIL_CONTACTS_REQUEST, FETCH_EMAIL_CONTACTS_SUCCESS, FETCH_EMAIL_CONTACTS_FAILURE} from './fetchEmailContactsTypes'
 import axios from 'axios'
+import { API_SERVICE } from '../../URI';
 
 
 const fetchEmailContactsRequest=()=>{
@@ -26,7 +27,7 @@ export const fetchEmailContacts=(user_id)=>{
     
     return (dispatch)=>{
         dispatch(fetchEmailContactsRequest())
-        axios.get("http://localhost:5000/api/fetch_contact_emails",{
+        axios.get(`${API_SERVICE}/api/fetch_contact_emails`,{
             params:{
                 user_id: user_id
             }
