@@ -19,7 +19,12 @@ import {
   TableCell,
   TableHead,
   LinearProgress,
-  Snackbar
+  Snackbar,
+  TablePagination,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
@@ -33,11 +38,24 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import axios from "axios";
 import { fetchUsers } from "src/redux/index";
 import { saveUsers } from "src/redux/saveUsers/saveUsersActions";
+import { ArrowBackIos, ArrowForwardIos } from "@material-ui/icons";
 
 
 const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
   const [value, setValue] = useState(0);
   const [users,setUsers] = useState([]);
+
+  const [nameSearch, setNameSearch] = useState("")
+  const [emailSearch, setEmailSearch] = useState("")
+  const [linkedinSearch, setLinkedinSearch] = useState("")
+  const [idSearch, setIdSearch] = useState("")
+  const [countrySearch, setCountrySearch] = useState("")
+
+    const [start, setStart] = useState(0)
+    const [end, setEnd] = useState(10)
+    const [page,setPage] = useState(1)
+    const [rowsPerPage,setRowsPerPage] = useState(10)
+    
 
   
 
@@ -273,17 +291,20 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
         <DialogTitle id="alert-dialog-title">Apply Filters</DialogTitle>
         <DialogContent>
           <div >
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Name" variant="outlined" />
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Job Title" variant="outlined" />
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Company Name" variant="outlined" />
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Location" variant="outlined" />
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Employee" variant="outlined" />
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Industry" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Name" value={nameSearch} onChange={(e)=>setNameSearch(e.target.value)} fullWidth label="Name" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="LinkeIn" value={linkedinSearch} onChange={(e)=>setLinkedinSearch(e.target.value)} fullWidth label="Linkedin" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="ID" value={idSearch} onChange={(e)=>setIdSearch(e.target.value)} fullWidth label="ID" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Country" value={countrySearch} onChange={(e)=>setCountrySearch(e.target.value)} fullWidth label="Country" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Email" value={emailSearch} onChange={(e)=>setEmailSearch(e.target.value)}  fullWidth label="Email" variant="outlined" />
+            {/* <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Industry" variant="outlined" /> */}
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Close
+          </Button>
+          <Button onClick={()=>{handleClose(); setNameSearch(""); setLinkedinSearch(""); setEmailSearch(""); setIdSearch(""); setCountrySearch("");}} color="primary">
+            Clear Filters
           </Button>
           <Button onClick={handleClose} color="primary" autoFocus>
             Apply Filter
@@ -293,7 +314,7 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
 
 
       <Helmet>
-        <title>Customers | Client Portal</title>
+        <title>Search | Client Portal</title>
       </Helmet>
       <Box
         sx={{
@@ -342,8 +363,8 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
               <TableCell style={{}}><h3>Country</h3></TableCell>
               <TableCell></TableCell>
               {usersList.users.length>0?(<>
-                {usersList.users?.map((user)=><TableRow> 
-                    <TableCell>{user.full_name}</TableCell>
+                {usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).slice(start,end).map((user)=><TableRow> 
+                    <TableCell>{user.full_name.includes("")?user.full_name:"mkm"}</TableCell>
                     <TableCell>{user.id}</TableCell>
                     <TableCell>{user && user.emails && user.emails.length>0 ?(<>{user.emails[0].address}</>):(<>NULL</>)}</TableCell>
                     <TableCell>{user.linkedin_username}</TableCell>
@@ -356,7 +377,36 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
               <TableCell > <LinearProgress style={{width:"200px"}} /> </TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell> </TableRow>)}
-
+             
+              <TableRow fullWidth style={{width:"100%"}}>
+                <TableCell>
+              <div style={{display:"flex", flexDirection:"row", margin:"20px"}}>
+                <IconButton onClick={()=>{ setStart(Math.max(0,start-rowsPerPage));  setEnd(Math.max(rowsPerPage,end-rowsPerPage)); }}><ArrowBackIos/></IconButton  > <IconButton onClick={()=>{setStart(Math.min(usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).length-rowsPerPage,start+rowsPerPage));  setEnd(Math.min(usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).length,end+rowsPerPage));}}><ArrowForwardIos/></IconButton>
+              
+              </div>
+              </TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Rows per page</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={rowsPerPage}
+          onChange={(e)=>{ setRowsPerPage(e.target.value); setStart(0); setEnd(e.target.value);}}
+          label="Rows per page"
+        >
+          
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+          <MenuItem value={30}>30</MenuItem>
+        </Select>
+      </FormControl></TableCell>
+              </TableRow>
+              
+              {/* <TablePagination component="div" count={10} page={page} onPageChange={(e,np)=>{  setPage(np)}} rowsPerPage={10} onRowsPerPageChange={()=>{}} /> */}
           </Table>
             <Snackbar anchorOrigin={{vertical:"bottom", horizontal:"left"}}
             open={((userSaveRef.refNo ) || (userSaveRef.error))&&openSnack}
