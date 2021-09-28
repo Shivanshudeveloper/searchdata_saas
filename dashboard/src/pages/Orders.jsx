@@ -40,6 +40,8 @@ import { fetchUsers } from "src/redux/index";
 import { saveUsers } from "src/redux/saveUsers/saveUsersActions";
 import { ArrowBackIos, ArrowForwardIos } from "@material-ui/icons";
 
+import UserView from "./UserView";
+
 
 const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
   const [value, setValue] = useState(0);
@@ -55,7 +57,9 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
     const [end, setEnd] = useState(10)
     const [page,setPage] = useState(1)
     const [rowsPerPage,setRowsPerPage] = useState(10)
-    
+    const [companySearch, setCompanySearch]=useState("")
+    const [desigSearch, setDesigSearch]=useState("")
+    const [searchBarName, setSearchBarName] = useState("")
 
   
 
@@ -280,6 +284,7 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
 
   return (
     <>
+   
       <Dialog
         open={open}
         fullWidth
@@ -293,17 +298,18 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
           <div >
             <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Name" value={nameSearch} onChange={(e)=>setNameSearch(e.target.value)} fullWidth label="Name" variant="outlined" />
             <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="LinkeIn" value={linkedinSearch} onChange={(e)=>setLinkedinSearch(e.target.value)} fullWidth label="Linkedin" variant="outlined" />
-            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="ID" value={idSearch} onChange={(e)=>setIdSearch(e.target.value)} fullWidth label="ID" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Company" value={companySearch} onChange={(e)=>setCompanySearch(e.target.value)} fullWidth label="Company" variant="outlined" />
+            <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Designation" value={desigSearch} onChange={(e)=>setDesigSearch(e.target.value)} fullWidth label="Designation" variant="outlined" />
             <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Country" value={countrySearch} onChange={(e)=>setCountrySearch(e.target.value)} fullWidth label="Country" variant="outlined" />
             <TextField id="outlined-basic" style={{ marginBottom: '18px' }} defaultValue="Email" value={emailSearch} onChange={(e)=>setEmailSearch(e.target.value)}  fullWidth label="Email" variant="outlined" />
-            {/* <TextField id="outlined-basic" style={{ marginBottom: '18px' }} fullWidth label="Industry" variant="outlined" /> */}
+           
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Close
           </Button>
-          <Button onClick={()=>{handleClose(); setNameSearch(""); setLinkedinSearch(""); setEmailSearch(""); setIdSearch(""); setCountrySearch("");}} color="primary">
+          <Button onClick={()=>{handleClose(); setNameSearch(""); setLinkedinSearch(""); setEmailSearch(""); setCompanySearch(""); setDesigSearch(""); setCountrySearch("");}} color="primary">
             Clear Filters
           </Button>
           <Button onClick={handleClose} color="primary" autoFocus>
@@ -335,7 +341,7 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
               Search
             </Typography>
             <div>
-              <TextField label="Search" variant="filled" size="small" />
+              <TextField label="Search" onChange={(e)=>{setSearchBarName(e.target.value)}} variant="filled" size="small" />
               <IconButton>
                 <SearchIcon />
               </IconButton>
@@ -356,20 +362,24 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
 
 
           <Table >
-              <TableCell><h3>Full Name</h3> </TableCell>
-              <TableCell><h3>ID</h3> </TableCell>
+              <TableCell><h3>First Name</h3> </TableCell>
+              <TableCell><h3>Last Name</h3> </TableCell>
+              <TableCell><h3>Company</h3> </TableCell>
+              <TableCell><h3>Designation</h3> </TableCell>
               <TableCell><h3>Email</h3> </TableCell>
               <TableCell><h3>LinkedIn Username</h3> </TableCell>
               <TableCell style={{}}><h3>Country</h3></TableCell>
               <TableCell></TableCell>
               {usersList.users.length>0?(<>
-                {usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).slice(start,end).map((user)=><TableRow> 
-                    <TableCell>{user.full_name.includes("")?user.full_name:"mkm"}</TableCell>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user && user.emails && user.emails.length>0 ?(<>{user.emails[0].address}</>):(<>NULL</>)}</TableCell>
+                {usersList.users.filter((elem)=>((elem.first_name?(elem.first_name.includes(nameSearch)):(nameSearch?false:true)) ||(elem.last_name?(elem.last_name.includes(nameSearch)):(nameSearch?false:true))) && ((elem.first_name?(elem.first_name.includes(searchBarName)):(searchBarName?false:true)) || (elem.first_name?(elem.first_name.includes(searchBarName)):(searchBarName?false:true))) && (elem.linkedin_username?(elem.linkedin_username.includes(linkedinSearch)):(linkedinSearch?false:true)) && (elem.location_country?(elem.location_country.includes(countrySearch)):(countrySearch?false:true)) && (elem.job_company_name?(elem.job_company_name.includes(companySearch)):(companySearch?false:true)) && (elem.job_title?(elem.job_title.includes(desigSearch)):(desigSearch?false:true)) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).slice(start,end).map((user)=><TableRow> 
+                    <TableCell>{user.first_name?user.first_name:"N/A"}</TableCell>
+                    <TableCell>{user.last_name?user.last_name:"N/A"}</TableCell>
+                    <TableCell>{user.job_company_name?user.job_company_name:"N/A"}</TableCell>
+                    <TableCell>{user.job_title?user.job_title:"N/A"}</TableCell>
+                    <TableCell>{user && user.emails && user.emails.length>0 ?(<>{user.emails[0].address}</>):(<>N/A</>)}</TableCell>
                     <TableCell>{user.linkedin_username}</TableCell>
                     <TableCell>{user.location_country}</TableCell>
-                    <TableCell><Button onClick={()=>{setOpenSnack(true);saveUserProcess({user_id: user.id, full_name: user.full_name, country: user.location_country,linkedin: user.linkedin_username, email: (user && user.emails && user.emails.length>0 ?user.emails[0].address:"N/A")})}} variant="contained">SAVE</Button></TableCell>
+                    <TableCell><Button onClick={()=>{setOpenSnack(true);saveUserProcess({userInfoCompressed: user, user_id:user.id, company: user.job_company_name, first_name: user.first_name,last_name:user.last_name, designation:user.job_title, country: user.location_country,linkedin: user.linkedin_username, email: (user && user.emails && user.emails.length>0 ?user.emails[0].address:"N/A")})}} variant="contained">SAVE</Button></TableCell>
                 </TableRow>)}
               </>):(<TableRow><TableCell></TableCell>
               <TableCell></TableCell>
@@ -381,7 +391,7 @@ const Orders = ({usersList,fetchUsersProcess,saveUserProcess, userSaveRef}) => {
               <TableRow fullWidth style={{width:"100%"}}>
                 <TableCell>
               <div style={{display:"flex", flexDirection:"row", margin:"20px"}}>
-                <IconButton onClick={()=>{ setStart(Math.max(0,start-rowsPerPage));  setEnd(Math.max(rowsPerPage,end-rowsPerPage)); }}><ArrowBackIos/></IconButton  > <IconButton onClick={()=>{setStart(Math.min(usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).length-rowsPerPage,start+rowsPerPage));  setEnd(Math.min(usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).length,end+rowsPerPage));}}><ArrowForwardIos/></IconButton>
+                <IconButton onClick={()=>{ setStart(Math.max(0,start-rowsPerPage));  setEnd(Math.max(rowsPerPage,end-rowsPerPage)); }}><ArrowBackIos/></IconButton  > <IconButton onClick={()=>{setStart(Math.min(usersList.users.filter((elem)=>((elem.first_name?(elem.first_name.includes(nameSearch)):(nameSearch?false:true)) ||(elem.last_name?(elem.last_name.includes(nameSearch)):(nameSearch?false:true)) ) && (elem.linkedin_username?(elem.linkedin_username.includes(linkedinSearch)):(linkedinSearch?false:true)) && (elem.location_country?(elem.location_country.includes(countrySearch)):(countrySearch?false:true)) && (elem.job_company_name?(elem.job_company_name.includes(companySearch)):(companySearch?false:true)) && (elem.job_title?(elem.job_title.includes(desigSearch)):(desigSearch?false:true)) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).length-rowsPerPage,start+rowsPerPage));  setEnd(Math.min(usersList.users.filter((elem)=>elem.full_name?.includes(nameSearch) && elem.linkedin_username?.includes(linkedinSearch) && elem.location_country?.includes(countrySearch) && elem.id.includes(idSearch) && (elem && elem.emails && elem.emails.length>0 ? (elem.emails[0].address.includes(emailSearch)):(emailSearch?false:true))).length,end+rowsPerPage));}}><ArrowForwardIos/></IconButton>
               
               </div>
               </TableCell>

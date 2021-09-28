@@ -32,11 +32,14 @@ export const saveUsers=(userdata)=>{
         url: `${API_SERVICE}/api/add-user`,
         data: {
                 id: userdata.user_id,
-                name: userdata.full_name,
+                first_name: userdata.first_name,
+                last_name: userdata.last_name,
+                company: userdata.country,
+                designation: userdata.designation,
                 country: userdata.country,
                 linkedin: userdata.linkedin,
-                email:userdata.email
-            }
+                email:userdata.email,
+                userInfoCompressed: userdata.userInfoCompressed            }
         }).then((resp)=>{
    if(resp.data.error)
         {dispatch(saveUsersFailure(resp.data.error))}

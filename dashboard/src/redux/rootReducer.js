@@ -5,6 +5,8 @@ import fetchSavedUsersReducer from "./fetchSavedUsers/fetchSavedUsersReducer";
 import deleteUsersReducer from "./deleteUsers/deleteUsersReducer";
 import fetchEmailContactsReducer from "./fetchEmailContacts/fetchEmailContactsReducer";
 import addEmailContactsReducer from "./addEmailContacts/addEmailContactsReducer";
+import addCallReducer from "./addCall/addCallReducer";
+import fetchCallsReducer from "./fetchCalls/fetchCallsReducer";
 
 const rootReducer = combineReducers({
     usersList: fetchUsersReducer,
@@ -12,7 +14,9 @@ const rootReducer = combineReducers({
     savedUsers: fetchSavedUsersReducer,
     deleteUserRefNo: deleteUsersReducer,
     userContactsEmail: fetchEmailContactsReducer,
-    addEmailContactRef: addEmailContactsReducer
+    addEmailContactRef: addEmailContactsReducer,
+    addCallRef: addCallReducer,
+    fetchCallsList: fetchCallsReducer
   });
   
 export default rootReducer;
