@@ -79,7 +79,7 @@ router.get('/fetch_calls',(req,res)=>{
             const collection=database.collection(`UserCalls`)
            
             const usersList=await collection.find({"id":req.query.user_id}).toArray()
-            console.log("SUCCESS",usersList[0].calls)
+           // console.log("SUCCESS",usersList[0].calls)
             res.json({calls:usersList[0].calls, error:''})
         }
         catch(err){
@@ -89,6 +89,29 @@ router.get('/fetch_calls',(req,res)=>{
     }
     fetchUsersList()
 })
+
+
+router.get('/fetch_tasks',(req,res)=>{
+    async function fetchTasksList(){
+        
+        try{
+            await client.connect()
+            const database=client.db("SearchSAAS");
+       
+            const collection=database.collection(`UserTasks`)
+           
+            const usersList=await collection.find({"id":req.query.user_id}).toArray()
+            //console.log("SUCCESS",usersList[0].calls)
+            res.json({tasks:usersList[0].tasks, error:''})
+        }
+        catch(err){
+            console.log(err.message)
+            res.json({error: err.message, tasks:[]})
+        }
+    }
+    fetchTasksList()
+})
+
 
 router.get('/fetch_contact_emails',(req,res)=>{
     async function fetchUserEmailContacts(){
@@ -181,11 +204,6 @@ router.post('/add-call',(req,res)=>{
            const query = req.body
            const userCalls=await collection1.findOneAndUpdate({"id":query.user_id},{$push:{calls: query.callInfo}},{upsert: true})
 
-            console.log("HI")
-           
-          //  const userData=await collection.find(query)
-            // const result = await collection1.insertOne(query)
-            // return res.json({refNo: result.insertedId, error:''})
         }
         catch(err){
             console.log(err.message)
@@ -194,6 +212,31 @@ router.post('/add-call',(req,res)=>{
     }
     saveUsersList()
 })
+
+
+
+router.post('/add-task',(req,res)=>{
+    async function saveTask(){
+        
+        try{
+            await client.connect()
+            const database=client.db("SearchSAAS");
+       
+          //  const collection=database.collection(`Users`)
+            const collection1 = database.collection(`UserTasks`)
+           const query = req.body
+           const userCalls=await collection1.findOneAndUpdate({"id":query.user_id},{$push:{tasks: query.taskInfo}},{upsert: true})
+
+        }
+        catch(err){
+            console.log(err.message)
+            return res.json({error: err.message, refNo:''})
+        }
+    }
+    saveTask()
+})
+
+
 
 
 

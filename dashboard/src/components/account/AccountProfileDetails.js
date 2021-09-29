@@ -9,6 +9,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
+import { auth } from 'src/firebase';
 
 const states = [
   {
@@ -27,13 +28,31 @@ const states = [
 
 const AccountProfileDetails = (props) => {
   const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
+    firstName: props.currUserFirstName,
+    lastName: props.currUserLastName,
+    email: props.currUserEmail,
     phone: '',
     state: 'Alabama',
     country: 'USA'
   });
+  const [changeDispNameError,setChangeDispNameError] = useState("")
+  const [toChangeEmail, setToChangeEmail] = useState(false)
+
+  const user = auth.currentUser
+
+  const handleChangeDispName=()=>{
+    // const credential = firebase.auth.EmailAuthProvider.credential(user.email)
+    // user.reauthenticateWithCredential(credential).then(()=>{
+      user.updateProfile({
+        displayName: ((values.firstName || values.lastName)?((values.firstName?values.firstName:props.currUserFirstName)+" "+(values.lastName?values.lastName:props.currUserLastName)):(props.currUserFirstName+" "+props.currUserLastName))
+      }).then(()=>{
+        setChangeDispNameError("none");
+        window.location.reload(false)
+        console.log("changed display name")
+      }).catch((err)=>{ setChangeDispNameError(err.message); console.log(err.message)})
+    // }).catch((err)=>{setChangePassError(err.message); console.log("ERROR: ",err.message)})
+
+  }
 
   const handleChange = (event) => {
     setValues({
@@ -71,7 +90,7 @@ const AccountProfileDetails = (props) => {
                 name="firstName"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={values.firstName || props.currUserFirstName || ""}
                 variant="outlined"
               />
             </Grid>
@@ -86,7 +105,7 @@ const AccountProfileDetails = (props) => {
                 name="lastName"
                 onChange={handleChange}
                 required
-                value={values.lastName}
+                value={values.lastName || props.currUserLastName || ""}
                 variant="outlined"
               />
             </Grid>
@@ -99,9 +118,10 @@ const AccountProfileDetails = (props) => {
                 fullWidth
                 label="Email Address"
                 name="email"
-                onChange={handleChange}
+                disabled
+                onChange={(e)=>{ handleChange(e)}}
                 required
-                value={values.email}
+                value={values.email || props.currUserEmail || ""}
                 variant="outlined"
               />
             </Grid>
@@ -110,15 +130,7 @@ const AccountProfileDetails = (props) => {
               md={6}
               xs={12}
             >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
+              
             </Grid>
           </Grid>
         </CardContent>
@@ -133,9 +145,11 @@ const AccountProfileDetails = (props) => {
           <Button
             color="primary"
             variant="contained"
+            onClick={()=>handleChangeDispName()}
           >
             Save details
           </Button>
+          {console.log("ERROR", changeDispNameError)}
         </Box>
       </Card>
     </form>
