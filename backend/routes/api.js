@@ -112,6 +112,27 @@ router.get('/fetch_tasks',(req,res)=>{
     fetchTasksList()
 })
 
+router.get('/fetch_email_provider_details',(req,res)=>{
+    async function fetchEmailProvider(){
+        
+        try{
+            await client.connect()
+            const database=client.db("SearchSAAS");
+       
+            const collection=database.collection(`UserEmailSettings`)
+           
+            const usersList=await collection.find({"id":req.query.user_id}).toArray()
+            //console.log("SUCCESS",usersList[0].calls)
+            res.json({email_provider_settings :usersList[0].email_provider_settings, error:''})
+        }
+        catch(err){
+            console.log(err.message)
+            res.json({error: err.message, email_provider_settings: {}})
+        }
+    }
+    fetchEmailProvider()
+})
+
 
 router.get('/fetch_contact_emails',(req,res)=>{
     async function fetchUserEmailContacts(){
@@ -236,7 +257,26 @@ router.post('/add-task',(req,res)=>{
     saveTask()
 })
 
-
+router.post('/set-email-provider',(req,res)=>{
+    async function setEmailProvider(){
+        
+        try{
+            await client.connect()
+            const database=client.db("SearchSAAS");
+       
+          //  const collection=database.collection(`Users`)
+            const collection1 = database.collection(`UserEmailSettings`)
+           const query = req.body
+           const userEmail=await collection1.findOneAndUpdate({"id":query.user_id},{$set:{email_provider_settings: query.email_provider_settings}},{upsert: true})
+            return res.json({error:'', refNo: "SUCCESS"})
+        }
+        catch(err){
+            console.log(err.message)
+            return res.json({error: err.message, refNo:''})
+        }
+    }
+    setEmailProvider()
+})
 
 
 
