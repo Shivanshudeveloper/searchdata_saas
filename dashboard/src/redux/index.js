@@ -9,3 +9,7 @@ export * from "./addCall/addCallActions"
 export * from "./fetchCalls/fetchCallsActions"
 
 export * from "./fetchTasks/fetchTasksActions"
+
+export * from "./fetchEmailSettings/fetchEmailSettingsActions"
+
+export * from "./setEmailSettings/setEmailSettingsActions"

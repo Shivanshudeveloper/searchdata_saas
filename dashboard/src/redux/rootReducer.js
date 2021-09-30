@@ -9,6 +9,8 @@ import addCallReducer from "./addCall/addCallReducer";
 import fetchCallsReducer from "./fetchCalls/fetchCallsReducer";
 import fetchTasksReducer from "./fetchTasks/fetchTasksReducer";
 import addTaskReducer from "./addTask/addTaskReducer";
+import setEmailSettingsReducer from "./setEmailSettings/setEmailSettingsReducer";
+import fetchEmailSettingsReducer from "./fetchEmailSettings/fetchEmailSettingsReducer";
 
 const rootReducer = combineReducers({
     usersList: fetchUsersReducer,
@@ -20,7 +22,9 @@ const rootReducer = combineReducers({
     addCallRef: addCallReducer,
     fetchCallsList: fetchCallsReducer,
     fetchTasksList: fetchTasksReducer,
-    addTaskRef: addTaskReducer
+    addTaskRef: addTaskReducer,
+    setEmailSettingsRef: setEmailSettingsReducer,
+    fetchEmailSettings: fetchEmailSettingsReducer
   });
   
 export default rootReducer;

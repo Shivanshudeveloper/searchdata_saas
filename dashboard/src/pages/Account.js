@@ -6,6 +6,7 @@ import { Box, Container, Grid } from "@material-ui/core";
 import AccountProfile from "src/components/account/AccountProfile";
 import AccountProfileDetails from "src/components/account/AccountProfileDetails";
 import {auth} from "../firebase/index"
+import SettingsEmail from "src/components/settings/SettingsEmail";
 
 const Account = () => {
   const [currUserDisplayName,setCurrUserDisplayName] = useState(null)
@@ -48,6 +49,9 @@ const Account = () => {
       <Container maxWidth="lg">
         <Box sx={{ pt: 3 }}>
           <SettingsPassword />
+        </Box>
+        <Box sx={{ pt: 3 }}>
+          <SettingsEmail />
         </Box>
       </Container>
     </Box>
