@@ -11,6 +11,8 @@ import fetchTasksReducer from "./fetchTasks/fetchTasksReducer";
 import addTaskReducer from "./addTask/addTaskReducer";
 import setEmailSettingsReducer from "./setEmailSettings/setEmailSettingsReducer";
 import fetchEmailSettingsReducer from "./fetchEmailSettings/fetchEmailSettingsReducer";
+import fetchEnrichCSVReducer from "./fetchEnrichCSV/fetchEnrichCSVReducer";
+import addEnrichCSVReducer from "./addEnrichCSV/addEnrichCSVReducer"
 
 const rootReducer = combineReducers({
     usersList: fetchUsersReducer,
@@ -24,7 +26,9 @@ const rootReducer = combineReducers({
     fetchTasksList: fetchTasksReducer,
     addTaskRef: addTaskReducer,
     setEmailSettingsRef: setEmailSettingsReducer,
-    fetchEmailSettings: fetchEmailSettingsReducer
+    fetchEmailSettings: fetchEmailSettingsReducer,
+    fetchEnrichCSV: fetchEnrichCSVReducer,
+    addEnrichCSVRef: addEnrichCSVReducer 
   });
   
 export default rootReducer;

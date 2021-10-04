@@ -157,6 +157,30 @@ router.get('/fetch_contact_emails',(req,res)=>{
     fetchUserEmailContacts()
 })
 
+
+router.get('/fetch_enrich_csv',(req,res)=>{
+    async function fetchUserEnrichCSV(){
+        
+        try{
+            await client.connect()
+            const database=client.db("SearchSAAS");
+            const query = req.query
+            const collection=database.collection(`UserEnrichCSV`)
+           
+            const user=await collection.find({id: query.user_id }).toArray()
+            
+            const userEnrichCSV = user[0].enrich_csv
+
+            //console.log(userContacts)
+            return res.json({enrich_csv: userEnrichCSV, error:''})
+        }
+        catch(err){
+            return res.json({error: err.message, enrich_csv: []})
+        }
+    }
+    fetchUserEnrichCSV()
+})
+
 router.post('/add-user',(req,res)=>{
     async function saveUsersList(){
         
@@ -303,6 +327,31 @@ router.post('/delete-user',(req,res)=>{
     }
     saveUsersList()
 })
+
+
+router.post('/add-enrich-csv',(req,res)=>{
+    async function addEnrichCSV(){
+        
+        try{
+            await client.connect()
+            const database=client.db("SearchSAAS");
+       
+          //  const collection=database.collection(`Users`)
+            const collection1 = database.collection(`UserEnrichCSV`)
+            const query = req.body
+            const userAddEnrichCSV=await collection1.findOneAndUpdate({"id":query.user_id},{$push:{enrich_csv: query.enrich_csv}},{upsert: true})
+            return res.json({error:'', refNo: "SUCCESS"})
+        }
+        catch(err){
+            console.log(err.message)
+            return res.json({error: err.message, refNo:''})
+        }
+    }
+    addEnrichCSV()
+})
+
+
+
 
 
 

@@ -140,7 +140,7 @@ const Dashboard = ({savedUsers,fetchSavedUsersProcess, deleteUser}) => {
     (userInfo.facebook_url?userInfo.facebook_url:"N/A"),
     (userInfo.github_url?userInfo.github_url:"N/A"),
     (userInfo.work_email?userInfo.work_email:"N/A"),
-    (userInfo.mobile_phone?userInfo.mobile_phone:"N/A"),
+    (userInfo.mobile_phone?userInfo.mobile_phone:(userInfo.phone_numbers.length>0?userInfo.phone_numbers[0]:"N/A")),
     (userInfo.industry?userInfo.industry:"N/A"),
     (userInfo.job_title?userInfo.job_title:"N/A"),
     (userInfo.job_company_name?userInfo.job_company_name:"N/A"),
@@ -206,6 +206,7 @@ window.open(encodedUri)
             
             
             <TableCell><h3>Email</h3></TableCell>
+            <TableCell><h3>Phone</h3></TableCell>
             <TableCell><h3>LinkedIn Username</h3></TableCell>
             <TableCell><h3>Country</h3></TableCell>
             <TableCell></TableCell>
@@ -222,6 +223,7 @@ window.open(encodedUri)
                     <TableCell>{user.company}</TableCell>
                     <TableCell>{user.designation}</TableCell>
                     <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.userInfoCompressed.phone_numbers.length>0?user.userInfoCompressed.phone_numbers:(user.userInfoCompressed.mobile_phone?user.userInfoCompressed.mobile_phone:"N/A")}</TableCell>
                     <TableCell>{user.linkedin}</TableCell>
                     <TableCell>{user.country}</TableCell>
                     <TableCell><Button variant="contained" onClick={()=>{setUserDetails(user.userInfoCompressed); setUserViewMode(true)}}>View</Button></TableCell>
