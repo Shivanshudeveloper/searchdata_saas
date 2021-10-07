@@ -47,6 +47,22 @@ router.get("/fetch_user_conacts_email", (req, res) => {
   fetchUsersList();
 });
 
+router.get("/fetch_user_api_enrichment", (req, res) => {
+  async function fetchUsersList() {
+    try {
+      await client.connect();
+      const database = client.db("SearchSAAS");
+
+      const collection = database.collection(`SavedUsers`);
+
+      res.json({ users: collection });
+    } catch (err) {
+      res.json({ error: err.message });
+    }
+  }
+  fetchUsersList();
+});
+
 router.get("/fetch_saved_users", (req, res) => {
   async function fetchUsersList() {
     try {
